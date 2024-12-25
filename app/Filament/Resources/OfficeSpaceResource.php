@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -24,6 +25,10 @@ class OfficeSpaceResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+                
+                Forms\Components\TextInput::make('address')
                     ->required()
                     ->maxLength(255),
 
@@ -52,6 +57,36 @@ class OfficeSpaceResource extends Resource
                     ->required()
                     ->maxLength(255),
                 ]),
+
+                Forms\Components\Select::make('city_id')
+                    ->relationship('city', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->required(),
+
+                Forms\Components\TextInput::make('price')
+                ->required()
+                ->numeric()
+                ->prefix('IDR'),
+
+                Forms\Components\TextInput::make('duration')
+                ->required()
+                ->numeric()
+                ->prefix('Days'),
+
+                Forms\Components\Select::make('is_open')
+                ->options([
+                    true => 'Open',
+                    false => 'Closed',
+                ])
+                ->required(),
+
+                Forms\Components\Select::make('is_full_booked')
+                ->options([
+                    true => 'Not Available',
+                    false => 'Available',
+                ])
+                ->required(),
             ]);
     }
 
@@ -59,10 +94,24 @@ class OfficeSpaceResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\ImageColumn::make('thumbnail'),
+                Tables\Columns\TextColumn::make('city.name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('price'),
+                Tables\Columns\IconColumn::make('is_full_booked')
+                    ->boolean()
+                    ->trueColor('danger')
+                    ->falseColor('success')
+                    ->trueIcon('heroicon-o-x-circle')
+                    ->falseIcon('heroicon-o-check-circle')
+                    ->label('Availability'),
             ])
             ->filters([
-                //
+                SelectFilter::make('city_id')
+                ->relationship('city', 'name')
+                ->label('City'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
