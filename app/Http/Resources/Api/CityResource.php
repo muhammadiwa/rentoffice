@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources\Api;
 
-use App\Filament\Resources\OfficeSpaceResource;
 use Illuminate\Http\Request;
+use App\Http\Resources\Api\OfficeSpaceResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CityResource extends JsonResource
