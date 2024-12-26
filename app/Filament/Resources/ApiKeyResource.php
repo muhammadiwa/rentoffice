@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\CityResource\Pages;
-use App\Filament\Resources\CityResource\RelationManagers;
-use App\Models\City;
+use App\Filament\Resources\ApiKeyResource\Pages;
+use App\Filament\Resources\ApiKeyResource\RelationManagers;
+use App\Models\ApiKey;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,24 +13,22 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class CityResource extends Resource
+class ApiKeyResource extends Resource
 {
-    protected static ?string $model = City::class;
+    protected static ?string $model = ApiKey::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-map-pin';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                ->helperText('The name of the city')
-                ->required()
-                ->maxLength(255),
-
-                Forms\Components\FileUpload::make('photo')
-                ->image()
-                ->required(),
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('key')
+                    ->required()
+                    ->maxLength(255),
             ]);
     }
 
@@ -39,16 +37,13 @@ class CityResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                ->searchable(),
-                Tables\Columns\ImageColumn::make('photo')
+                    ->searchable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -67,9 +62,9 @@ class CityResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListCities::route('/'),
-            'create' => Pages\CreateCity::route('/create'),
-            'edit' => Pages\EditCity::route('/{record}/edit'),
+            'index' => Pages\ListApiKeys::route('/'),
+            'create' => Pages\CreateApiKey::route('/create'),
+            'edit' => Pages\EditApiKey::route('/{record}/edit'),
         ];
     }
 }
